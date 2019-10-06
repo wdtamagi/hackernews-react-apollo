@@ -5,6 +5,7 @@ import '../styles/App.css'
 import LinkList from './LinkList'
 import Header from './Header'
 import CreateLink from './CreateLink'
+import Login from './Login'
 
 const App = props => (
   <div className="center w85">
@@ -13,6 +14,7 @@ const App = props => (
       <Switch>
         <Route exact path="/" component={LinkList} />
         <Route exact path="/create" component={CreateLink} />
+        <Route exact path="/login" component={Login} />
       </Switch>
     </div>
   </div>
