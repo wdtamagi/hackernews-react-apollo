@@ -77,7 +77,13 @@ const NEW_VOTES_SUBSCRIPTION = gql`
   }
 `
 
-const LinkList = props => {
+const LinkList = ({
+  match: {
+    params: { page },
+  },
+  location: { pathname },
+  history,
+}) => {
   const _subscribeToNewLinks = subscribeToMore => {
     subscribeToMore({
       document: NEW_LINKS_SUBSCRIPTION,
@@ -105,17 +111,17 @@ const LinkList = props => {
   }
 
   const _getQueryVariables = () => {
-    const isNewPage = props.location.pathname.includes('new')
-    const page = parseInt(props.match.params.page, 10)
+    const isNewPage = pathname.includes('new')
+    const pageParam = parseInt(page, 10)
 
-    const skip = isNewPage ? (page - 1) * LINKS_PER_PAGE : 0
+    const skip = isNewPage ? (pageParam - 1) * LINKS_PER_PAGE : 0
     const first = isNewPage ? LINKS_PER_PAGE : 100
     const orderBy = isNewPage ? 'createdAt_DESC' : null
     return { first, skip, orderBy }
   }
 
   const _getLinksToRender = data => {
-    const isNewPage = props.location.pathname.includes('new')
+    const isNewPage = pathname.includes('new')
     if (isNewPage) {
       return data.feed.links
     }
@@ -125,18 +131,18 @@ const LinkList = props => {
   }
 
   const _nextPage = data => {
-    const page = parseInt(props.match.params.page, 10)
-    if (page <= data.feed.count / LINKS_PER_PAGE) {
-      const nextPage = page + 1
-      props.history.push(`/new/${nextPage}`)
+    const pageParam = parseInt(page, 10)
+    if (pageParam <= data.feed.count / LINKS_PER_PAGE) {
+      const nextPage = pageParam + 1
+      history.push(`/new/${nextPage}`)
     }
   }
 
   const _previousPage = () => {
-    const page = parseInt(props.match.params.page, 10)
-    if (page > 1) {
-      const previousPage = page - 1
-      props.history.push(`/new/${previousPage}`)
+    const pageParam = parseInt(page, 10)
+    if (pageParam > 1) {
+      const previousPage = pageParam - 1
+      history.push(`/new/${previousPage}`)
     }
   }
 
@@ -150,10 +156,8 @@ const LinkList = props => {
         _subscribeToNewVotes(subscribeToMore)
 
         const linksToRender = _getLinksToRender(data)
-        const isNewPage = props.location.pathname.includes('new')
-        const pageIndex = props.match.params.page
-          ? (props.match.params.page - 1) * LINKS_PER_PAGE
-          : 0
+        const isNewPage = pathname.includes('new')
+        const pageIndex = page ? (page - 1) * LINKS_PER_PAGE : 0
 
         return (
           <Fragment>
