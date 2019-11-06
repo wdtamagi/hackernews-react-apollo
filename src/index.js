@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom'
 import './index.css'
 import * as serviceWorker from './serviceWorker'
 
-import { ApolloProvider } from 'react-apollo'
-import { ApolloClient } from 'apollo-client'
+import { ApolloProvider } from '@apollo/react-hooks'
+import ApolloClient from 'apollo-client'
 import { createHttpLink } from 'apollo-link-http'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 import { setContext } from 'apollo-link-context'
@@ -43,6 +43,7 @@ const wsLink = new WebSocketLink({
 })
 
 const link = split(
+  // split based on operation type
   ({ query }) => {
     const { kind, operation } = getMainDefinition(query)
     return kind === 'OperationDefinition' && operation === 'subscription'
