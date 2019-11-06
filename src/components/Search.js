@@ -31,12 +31,16 @@ const Search = ({ client }) => {
   const [filter, setFilter] = useState('')
 
   const _executeSearch = async () => {
-    const result = await client.query({
+    const {
+      data: {
+        feed: { links: resultLinks = [] },
+      },
+    } = await client.query({
       query: FEED_SEARCH_QUERY,
       variables: { filter },
     })
-    const linksResult = result.data.feed.links
-    setLinks({ linksResult })
+
+    setLinks(resultLinks)
   }
 
   return (
